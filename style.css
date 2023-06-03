@@ -3,6 +3,12 @@
   padding: 0;
   box-sizing: border-box;
 }
+body {
+  background-color: grey;
+}
+.title {
+  font-family: sans-serif;
+}
 #canvas1 {
   background: url('background.png');
   position: absolute;
