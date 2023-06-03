@@ -96,3 +96,7 @@ window.addEventListener('load', function () {
   }
   animate();
 });
+
+const copyright = document.getElementById('copyright');
+
+copyright.innerHTML = `&copy rexhent ${new Date().getFullYear()}.`;
