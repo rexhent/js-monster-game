@@ -50,12 +50,50 @@ window.addEventListener('load', function () {
     }
   }
 
+  class Obstacle {
+    constructor(game) {
+      this.game = game;
+      this.collisionX = Math.random() * this.game.width;
+      this.collisionY = Math.random() * this.game.height;
+      this.collisionRadius = 60;
+      this.image = document.getElementById('obstacles');
+      this.spriteWidth = 250;
+      this.spriteHeight = 250;
+      this.width = this.spriteWidth;
+      this.height = this.spriteHeight;
+      this.spriteX = this.collisionX - this.width * 0.5;
+      this.spriteY = this.collisionY - this.height * 0.5 - 70;
+    }
+    draw(context) {
+      context.drawImage(
+        this.image,
+        0,
+        0,
+        this.spriteWidth,
+        this.spriteHeight,
+        this.spriteX,
+        this.spriteY,
+        this.width,
+        this.height
+      );
+      context.beginPath();
+      context.arc(this.collisionX, this.collisionY, 50, 0, Math.PI * 2);
+      context.save();
+      context.globalAlpha = 0.5;
+      context.fill();
+      context.restore();
+      context.stroke();
+    }
+  }
+
   class Game {
     constructor(canvas) {
       this.canvas = canvas;
       this.width = this.canvas.width;
       this.height = this.canvas.height;
       this.player = new Player(this);
+      this.numberOfObstacles = 10;
+      this.obstacles = [];
       this.mouse = {
         x: this.height * 0.5,
         y: this.width * 0.5,
@@ -83,10 +121,36 @@ window.addEventListener('load', function () {
     render(context) {
       this.player.draw(context);
       this.player.update();
+      this.obstacles.forEach((obstacle) => obstacle.draw(context));
+    }
+    init() {
+      // for (let i = 0; i < this.numberOfObstacles; i++) {
+      //   this.obstacles.push(new Obstacle(this));
+      // }
+      let attempts = 0;
+      while (this.obstacles.length < this.numberOfObstacles && attempts < 500) {
+        let testObstacle = new Obstacle(this);
+        let overlap = false;
+        this.obstacles.forEach((obstacle) => {
+          const dx = testObstacle.collisionX - obstacle.collisionX;
+          const dy = testObstacle.collisionY - obstacle.collisionY;
+          const distance = Math.hypot(dy, dx);
+          const sumOfRadii =
+            testObstacle.collisionRadius + obstacle.collisionRadius;
+          if (distance < sumOfRadii) {
+            overlap = true;
+          }
+        });
+        if (!overlap) {
+          this.obstacles.push(testObstacle);
+        }
+        attempts++;
+      }
     }
   }
 
   const game = new Game(canvas);
+  game.init();
   console.log(game);
 
   function animate() {
@@ -98,5 +162,4 @@ window.addEventListener('load', function () {
 });
 
 const copyright = document.getElementById('copyright');
-
-copyright.innerHTML = `&copy rexhent ${new Date().getFullYear()}.`;
+copyright.innerHTML = `&copy GPLv3 rexhent ${new Date().getFullYear()}.`;
