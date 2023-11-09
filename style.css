@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 body {
-  background-color: grey;
+  background-color: #f3f3f3;
 }
 .title {
   font-family: sans-serif;
@@ -15,6 +15,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0.5);
 }
 #overlay {
   position: absolute;
